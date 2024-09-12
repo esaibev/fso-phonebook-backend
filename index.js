@@ -77,31 +77,35 @@ app.post("/api/persons", (request, response) => {
     return Math.floor(Math.random() * 100000 + 1).toString();
   };
 
-  const person = request.body;
+  const body = request.body;
 
-  if (!person.name) {
-    response.status(400).json({
+  if (body.name == undefined) {
+    return response.status(400).json({
       error: "Name is missing",
     });
-    return;
   }
-  if (persons.some((p) => p.name === person.name)) {
-    response.status(400).json({
+  if (persons.some((p) => p.name === body.name)) {
+    return response.status(400).json({
       error: "Name must be unique",
     });
-    return;
   }
-  if (!person.number) {
-    response.status(400).json({
+  if (body.number == undefined) {
+    return response.status(400).json({
       error: "Number is missing",
     });
-    return;
   }
 
-  person.id = generateId();
-  persons = persons.concat(person);
-  console.log("Persons now:", persons);
-  response.json(person);
+  body.id = generateId();
+
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
+
+  person.save().then((savedPerson) => {
+    console.log(`SavedPerson: ${savedPerson}`);
+    response.json(body);
+  });
 });
 
 const port = process.env.PORT || 3001;

@@ -75,10 +75,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
 });
 
 app.post("/api/persons", (request, response) => {
-  const generateId = () => {
-    return Math.floor(Math.random() * 100000 + 1).toString();
-  };
-
   const body = request.body;
 
   if (body.name == undefined) {
@@ -96,8 +92,6 @@ app.post("/api/persons", (request, response) => {
       error: "Number is missing",
     });
   }
-
-  // body.id = generateId();
 
   const person = new Person({
     name: body.name,

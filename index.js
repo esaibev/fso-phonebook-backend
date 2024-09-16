@@ -77,7 +77,7 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons", (request, response) => {
   const body = request.body;
 
-  if (body.name == undefined) {
+  if (!body.name) {
     return response.status(400).json({
       error: "Name is missing",
     });
@@ -87,7 +87,7 @@ app.post("/api/persons", (request, response) => {
       error: "Name must be unique",
     });
   }
-  if (body.number == undefined) {
+  if (!body.number) {
     return response.status(400).json({
       error: "Number is missing",
     });
@@ -104,8 +104,28 @@ app.post("/api/persons", (request, response) => {
   });
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+  console.log(`Person: ${body.name}, ${body.number}, ${body.id}`);
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "Number is missing",
+    });
+  }
+
+  const updatedPerson = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, updatedPerson, { new: true })
+    .then((updatedPerson) => response.json(updatedPerson))
+    .catch((error) => next(error));
+});
+
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
+  response.status(404).send({ error: "Unknown endpoint" });
 };
 
 const errorHandler = (error, request, response, next) => {

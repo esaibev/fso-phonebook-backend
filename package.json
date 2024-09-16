@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf dist && cd ../full-stack-open/part3/phonebook-frontend/ && npm run build && cp -r dist ../../../fso-phonebook-backend",
-    "deploy:full": "npm run build:ui && git add . && git commit -m 'UI build' && git push"
+    "deploy:full": "npm run build:ui && git add . && git commit -m 'UI build' && git push",
+    "lint": "eslint ."
   },
   "author": "Esaias Bevegård",
   "license": "MIT",
@@ -19,7 +20,14 @@
     "mongoose": "^8.6.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.10.0",
+    "@stylistic/eslint-plugin-js": "^2.8.0",
+    "eslint": "^9.10.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.9.0",
     "morgan": "^1.10.0",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "prettier": "3.3.3"
   }
 }

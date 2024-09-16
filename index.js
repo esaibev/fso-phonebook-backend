@@ -46,23 +46,29 @@ app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => response.json(persons));
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).json({ error: "Person not found" });
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/api/info", (request, response) => {
-  const numPersons = persons.length;
-  const currentDate = new Date();
-  response.send(
-    `<p> Phonebook has info for ${numPersons} people </p><p>${currentDate}</p>`,
-  );
+app.get("/api/info", (request, response, next) => {
+  Person.find({})
+    .then((persons) => {
+      const numPersons = persons.length;
+      const currentDate = new Date();
+      response.send(
+        `<p> Phonebook has info for ${numPersons} people </p><p>${currentDate}</p>`,
+      );
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
@@ -132,7 +138,7 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
   if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
+    return response.status(400).send({ error: "Malformatted id" });
   }
 
   next(error);
